@@ -16,7 +16,6 @@ services:
     dockerfilePath: ./Dockerfile
     plan: free
     healthCheckPath: /healthz
-    preDeployCommand: npx prisma migrate deploy
     envVars:
       - key: NODE_ENV
         value: production
