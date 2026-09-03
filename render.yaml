@@ -8,6 +8,7 @@ services:
   - type: keyvalue
     name: assuredgig-redis
     plan: free
+    maxmemoryPolicy: noeviction
     ipAllowList: []
 
   - type: web
