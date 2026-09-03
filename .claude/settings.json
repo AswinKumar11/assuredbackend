@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew list *)",
+      "Bash(brew services *)",
+      "Bash(brew install *)",
+      "Bash(curl -s http://localhost:3000/v1/workers/me -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMDg2MmRiMi05OGNkLTQ3YTAtODcwYS0yYjM2NTAzZTEwZjkiLCJyb2xlIjoid29ya2VyIiwiZGV2aWNlSWQiOiJkZXYtbWFjaGluZS0xIiwiaWF0IjoxNzg3NTY4OTAxLCJleHAiOjE3ODc1Njk4MDF9.RkWo_62cBJZyvsK9bOhA57FRT7_ZSXoXPAhH2khGCbk')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}\\\\n' http://localhost:3000/v1/workers/me)"
+    ]
+  }
+}
