@@ -42,6 +42,16 @@ services:
         value: 30d
       - key: OTP_PEPPER
         generateValue: true
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET
+        sync: false
+      - key: R2_ENDPOINT
+        sync: false
       - key: FCM_PROJECT_ID
         sync: false
       - key: FCM_CLIENT_EMAIL
