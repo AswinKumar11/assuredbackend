@@ -1,4 +1,4 @@
-import { AttendanceKind, Booking, Requirement, CompanyLocation } from '@prisma/client';
+import { AttendanceKind, Booking, Requirement, Company } from '@prisma/client';
 
 import { ErrorCodeValue } from '../../shared/errors/error-codes';
 
@@ -25,7 +25,7 @@ export interface AttendanceSubmission {
 }
 
 export type BookingContext = Booking & {
-  requirement: Requirement & { location: CompanyLocation };
+  requirement: Requirement & { company: Company };
 };
 
 /** Thresholds resolved once per submission, all from the config service. */

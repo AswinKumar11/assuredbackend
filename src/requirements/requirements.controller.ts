@@ -29,9 +29,9 @@ export class RequirementsController {
   @ApiOkResponse({ type: [RequirementResponse] })
   async findAll(
     @Query('status') status?: RequirementStatus,
-    @Query('locationId') locationId?: string,
+    @Query('companyId') companyId?: string,
   ): Promise<RequirementResponse[]> {
-    return this.requirements.findAll({ status, locationId });
+    return this.requirements.findAll({ status, companyId });
   }
 
   @Get(':id')

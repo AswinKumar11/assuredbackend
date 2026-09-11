@@ -6,6 +6,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider    = "prisma-erd-generator"
+  output      = "../docs/erd.md"
+  ignoreEnums = "true"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -253,37 +259,27 @@ model OpsUser {
 // ---------------------------------------------------------------------------
 
 model Company {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  active      Boolean  @default(true)
+  addressLine String?
+  state        String?
+  district     String?
+  constituency String?
+  // Geofence centre. Radius default lives in Config; this is the per-company override.
+  lat             Float
+  lng             Float
+  geofenceRadiusM Int?
+  createdAt   DateTime @default(now())
 
-  locations CompanyLocation[]
+  requirements Requirement[]
 
   @@map("companies")
 }
 
-model CompanyLocation {
-  id             String   @id @default(uuid()) @db.Uuid
-  companyId      String   @db.Uuid
-  name           String
-  addressLine    String?
-  // Geofence centre. Radius default lives in Config; this is the per-site override.
-  lat            Float
-  lng            Float
-  geofenceRadiusM Int?
-  createdAt      DateTime @default(now())
-
-  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  requirements Requirement[]
-
-  @@index([companyId])
-  @@map("company_locations")
-}
-
 model Requirement {
   id           String            @id @default(uuid()) @db.Uuid
-  locationId   String            @db.Uuid
+  companyId    String            @db.Uuid
   role         String
   startsAt     DateTime
   endsAt       DateTime
@@ -296,9 +292,10 @@ model Requirement {
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
 
-  location CompanyLocation @relation(fields: [locationId], references: [id])
+  company  Company   @relation(fields: [companyId], references: [id])
   bookings Booking[]
 
+  @@index([companyId])
   @@index([status, startsAt])
   @@map("requirements")
 }

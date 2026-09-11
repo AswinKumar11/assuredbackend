@@ -179,12 +179,9 @@ export class GeofenceStage implements PipelineStage {
       return Promise.resolve();
     }
 
-    const location = ctx.booking.requirement.location;
-    const radiusM = location.geofenceRadiusM ?? ctx.thresholds.geofenceRadiusM;
-    const distanceM = this.geo.distanceMetres(
-      { lat, lng },
-      { lat: location.lat, lng: location.lng },
-    );
+    const company = ctx.booking.requirement.company;
+    const radiusM = company.geofenceRadiusM ?? ctx.thresholds.geofenceRadiusM;
+    const distanceM = this.geo.distanceMetres({ lat, lng }, { lat: company.lat, lng: company.lng });
 
     ctx.distanceM = distanceM;
 

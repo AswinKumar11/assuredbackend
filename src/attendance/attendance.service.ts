@@ -101,7 +101,7 @@ export class AttendanceService {
   private async loadBooking(bookingId: string): Promise<BookingContext> {
     const booking = await this.prisma.booking.findUnique({
       where: { id: bookingId },
-      include: { requirement: { include: { location: true } } },
+      include: { requirement: { include: { company: true } } },
     });
 
     if (!booking) throw new AppException(ErrorCode.NOT_FOUND, 'Booking not found');

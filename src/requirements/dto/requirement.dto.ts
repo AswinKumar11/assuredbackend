@@ -17,22 +17,22 @@ const REQUIREMENT_STATUSES = Object.values(RequirementStatus);
 
 export class CreateRequirementDto {
   @ApiPropertyOptional({
-    description: 'Existing CompanyLocation id. One of locationId/locationName is required.',
+    description: 'Existing Company id. One of companyId/companyName is required.',
   })
   @IsOptional()
   @IsUUID()
-  locationId?: string;
+  companyId?: string;
 
   @ApiPropertyOptional({
     description:
-      'Location name for quick testing. Reuses a matching CompanyLocation if one exists, ' +
-      'otherwise auto-creates a Company + CompanyLocation with placeholder coordinates. ' +
-      'One of locationId/locationName is required.',
+      'Company name for quick testing. Reuses a matching Company if one exists, ' +
+      'otherwise auto-creates one with placeholder coordinates. ' +
+      'One of companyId/companyName is required.',
   })
   @IsOptional()
   @IsString()
   @Length(2, 120)
-  locationName?: string;
+  companyName?: string;
 
   @ApiProperty()
   @IsString()
@@ -73,7 +73,7 @@ export class UpdateRequirementDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
-  locationId?: string;
+  companyId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -122,7 +122,7 @@ export class UpdateRequirementDto {
 
 export class RequirementResponse {
   @ApiProperty() id: string;
-  @ApiProperty() locationId: string;
+  @ApiProperty() companyId: string;
   @ApiProperty() role: string;
   @ApiProperty() startsAt: Date;
   @ApiProperty() endsAt: Date;

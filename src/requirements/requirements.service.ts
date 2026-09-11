@@ -15,11 +15,11 @@ export class RequirementsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateRequirementDto): Promise<RequirementResponse> {
-    const locationId = await this.resolveLocationId(dto.locationId, dto.locationName);
+    const companyId = await this.resolveCompanyId(dto.companyId, dto.companyName);
 
     const requirement = await this.prisma.requirement.create({
       data: {
-        locationId,
+        companyId,
         role: dto.role,
         startsAt: new Date(dto.startsAt),
         endsAt: new Date(dto.endsAt),
@@ -34,12 +34,12 @@ export class RequirementsService {
 
   async findAll(filter: {
     status?: RequirementStatus;
-    locationId?: string;
+    companyId?: string;
   }): Promise<RequirementResponse[]> {
     const requirements = await this.prisma.requirement.findMany({
       where: {
         status: filter.status,
-        locationId: filter.locationId,
+        companyId: filter.companyId,
       },
       orderBy: { startsAt: 'desc' },
     });
@@ -57,17 +57,17 @@ export class RequirementsService {
   async update(id: string, dto: UpdateRequirementDto): Promise<RequirementResponse> {
     await this.findOne(id);
 
-    if (dto.locationId !== undefined) {
-      const location = await this.prisma.companyLocation.findUnique({
-        where: { id: dto.locationId },
+    if (dto.companyId !== undefined) {
+      const company = await this.prisma.company.findUnique({
+        where: { id: dto.companyId },
       });
-      if (!location) {
-        throw new AppException(ErrorCode.NOT_FOUND, 'Location not found');
+      if (!company) {
+        throw new AppException(ErrorCode.NOT_FOUND, 'Company not found');
       }
     }
 
     const data: Prisma.RequirementUpdateInput = {};
-    if (dto.locationId !== undefined) data.location = { connect: { id: dto.locationId } };
+    if (dto.companyId !== undefined) data.company = { connect: { id: dto.companyId } };
     if (dto.role !== undefined) data.role = dto.role;
     if (dto.startsAt !== undefined) data.startsAt = new Date(dto.startsAt);
     if (dto.endsAt !== undefined) data.endsAt = new Date(dto.endsAt);
@@ -92,44 +92,43 @@ export class RequirementsService {
   }
 
   /**
-   * Testing convenience: a locationName with no matching CompanyLocation
-   * auto-creates a Company + CompanyLocation with placeholder coordinates.
-   * Real company/location CRUD doesn't exist yet, so this stands in for it.
+   * Testing convenience: a companyName with no matching Company
+   * auto-creates one with placeholder coordinates.
+   * Real company CRUD doesn't exist yet, so this stands in for it.
    */
-  private async resolveLocationId(
-    locationId: string | undefined,
-    locationName: string | undefined,
+  private async resolveCompanyId(
+    companyId: string | undefined,
+    companyName: string | undefined,
   ): Promise<string> {
-    if (locationId !== undefined) {
-      const location = await this.prisma.companyLocation.findUnique({
-        where: { id: locationId },
+    if (companyId !== undefined) {
+      const company = await this.prisma.company.findUnique({
+        where: { id: companyId },
       });
-      if (!location) {
-        throw new AppException(ErrorCode.NOT_FOUND, 'Location not found');
+      if (!company) {
+        throw new AppException(ErrorCode.NOT_FOUND, 'Company not found');
       }
-      return location.id;
+      return company.id;
     }
 
-    if (locationName !== undefined) {
-      const existing = await this.prisma.companyLocation.findFirst({
-        where: { name: { equals: locationName, mode: 'insensitive' } },
+    if (companyName !== undefined) {
+      const existing = await this.prisma.company.findFirst({
+        where: { name: { equals: companyName, mode: 'insensitive' } },
       });
       if (existing) return existing.id;
 
-      const company = await this.prisma.company.create({ data: { name: locationName } });
-      const location = await this.prisma.companyLocation.create({
-        data: { companyId: company.id, name: locationName, lat: 0, lng: 0 },
+      const company = await this.prisma.company.create({
+        data: { name: companyName, lat: 0, lng: 0 },
       });
-      return location.id;
+      return company.id;
     }
 
-    throw new AppException(ErrorCode.VALIDATION_FAILED, 'locationId or locationName is required');
+    throw new AppException(ErrorCode.VALIDATION_FAILED, 'companyId or companyName is required');
   }
 
   private toResponse(requirement: Requirement): RequirementResponse {
     return {
       id: requirement.id,
-      locationId: requirement.locationId,
+      companyId: requirement.companyId,
       role: requirement.role,
       startsAt: requirement.startsAt,
       endsAt: requirement.endsAt,
