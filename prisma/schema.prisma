@@ -251,7 +251,28 @@ model OpsUser {
   disabledAt   DateTime?
   createdAt    DateTime @default(now())
 
+  refreshTokens OpsRefreshToken[]
+
   @@map("ops_users")
+}
+
+// Ops console sessions. Same rotation and reuse-detection rules as worker
+// RefreshToken, minus device binding — the console is a browser, not a handset.
+model OpsRefreshToken {
+  id            String    @id @default(uuid()) @db.Uuid
+  opsUserId     String    @db.Uuid
+  familyId      String    @db.Uuid
+  tokenHash     String    @unique
+  replacedById  String?   @db.Uuid
+  revokedAt     DateTime?
+  revokedReason String?
+  expiresAt     DateTime
+  createdAt     DateTime  @default(now())
+
+  opsUser OpsUser @relation(fields: [opsUserId], references: [id], onDelete: Cascade)
+
+  @@index([opsUserId, familyId])
+  @@map("ops_refresh_tokens")
 }
 
 // ---------------------------------------------------------------------------

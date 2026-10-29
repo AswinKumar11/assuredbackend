@@ -44,6 +44,8 @@ export const ConfigKey = {
   OTP_MAX_PER_IP_PER_HOUR: 'auth.otp_max_per_ip_per_hour',
   OTP_MAX_ATTEMPTS: 'auth.otp_max_attempts',
   OTP_TTL_SECONDS: 'auth.otp_ttl_seconds',
+  OPS_LOGIN_MAX_PER_EMAIL_PER_HOUR: 'auth.ops_login_max_per_email_per_hour',
+  OPS_LOGIN_MAX_PER_IP_PER_HOUR: 'auth.ops_login_max_per_ip_per_hour',
 } as const;
 
 export type ConfigKeyValue = (typeof ConfigKey)[keyof typeof ConfigKey];
@@ -96,6 +98,8 @@ export const CONFIG_DEFAULTS: Record<ConfigKeyValue, unknown> = {
   [ConfigKey.OTP_MAX_PER_IP_PER_HOUR]: 20,
   [ConfigKey.OTP_MAX_ATTEMPTS]: 5,
   [ConfigKey.OTP_TTL_SECONDS]: 300,
+  [ConfigKey.OPS_LOGIN_MAX_PER_EMAIL_PER_HOUR]: 10,
+  [ConfigKey.OPS_LOGIN_MAX_PER_IP_PER_HOUR]: 30,
 };
 
 export const FLAG_DEFAULTS: Record<FeatureFlagKeyValue, boolean> = {

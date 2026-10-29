@@ -24,6 +24,7 @@ export const ErrorCode = {
   UNAUTHENTICATED: 'UNAUTHENTICATED',
   FORBIDDEN: 'FORBIDDEN',
   NOT_FOUND: 'NOT_FOUND',
+  CONFLICT: 'CONFLICT',
   INTERNAL: 'INTERNAL',
 } as const;
 
@@ -51,5 +52,6 @@ export const ERROR_STATUS: Record<ErrorCodeValue, number> = {
   UNAUTHENTICATED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
+  CONFLICT: 409,
   INTERNAL: 500,
 };
