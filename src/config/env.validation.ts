@@ -61,6 +61,10 @@ class EnvVars {
   @IsOptional() @IsString() FCM_CLIENT_EMAIL?: string;
   @IsOptional() @IsString() FCM_PRIVATE_KEY?: string;
 
+  // Seed-only: `npm run db:seed` creates this ADMIN if the email is not taken.
+  @IsOptional() @IsString() OPS_ADMIN_EMAIL?: string;
+  @IsOptional() @IsString() OPS_ADMIN_PASSWORD?: string;
+
   @IsOptional() @IsString() SENTRY_DSN?: string;
   @IsOptional() @IsString() LOG_LEVEL?: string;
 }

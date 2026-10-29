@@ -34,13 +34,35 @@ cp .env.example .env             # fill in secrets; thresholds do NOT go here
 npm install
 ./scripts/dev-services.sh start
 npx prisma migrate deploy        # schema is already migrated locally
-npm run db:seed                  # 24 config keys + 4 feature flags
+npm run db:seed                  # 26 config keys + 4 feature flags + first ops admin
 npm run start:dev
 ```
 
 - API: `http://localhost:3000/v1`
 - OpenAPI: `http://localhost:3000/docs` (JSON at `/docs/openapi.json`)
 - Health: `/v1/healthz`, `/v1/readyz`
+
+### Ops console accounts
+
+Ops users sign in with email and password; there is no self-sign-up.
+
+1. Set `OPS_ADMIN_EMAIL` and `OPS_ADMIN_PASSWORD` (12–128 chars) in `.env`, then
+   run `npm run db:seed`. It creates that ADMIN once and never touches it again.
+2. The admin signs in at `POST /v1/ops/auth/login` and manages everyone else:
+
+| Endpoint | Does |
+|---|---|
+| `POST /v1/ops/auth/login` | `{ email, password }` → access + refresh token |
+| `POST /v1/ops/auth/refresh` | `{ refreshToken }` → rotated pair (7-day sessions) |
+| `POST /v1/ops/auth/logout` | Ends every session for the caller |
+| `POST /v1/ops/users` | ADMIN: `{ email, password, role? }`, role defaults to `OPS` |
+| `PATCH /v1/ops/users/:id` | ADMIN: `{ role?, disabled? }`; disabling ends their sessions |
+| `POST /v1/ops/users/:id/password` | ADMIN: `{ password }`; ends their sessions |
+
+An admin cannot change their own role or status, so there is always at least one
+active admin. Role and disabled state are read from the database on every admin
+request, so a change takes effect immediately rather than when a token expires.
+Passwords are hashed with scrypt (`src/shared/auth/password.ts`).
 
 `/v1` comes from URI versioning alone — **do not also call
 `setGlobalPrefix('v1')`**, or every route mounts at `/v1/v1/...`. All app

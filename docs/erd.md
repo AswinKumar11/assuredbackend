@@ -79,6 +79,18 @@ erDiagram
     }
   
 
+  "ops_refresh_tokens" {
+    String id "🗝️"
+    String familyId 
+    String tokenHash 
+    String replacedById "❓"
+    DateTime revokedAt "❓"
+    String revokedReason "❓"
+    DateTime expiresAt 
+    DateTime createdAt 
+    }
+  
+
   "companies" {
     String id "🗝️"
     String name 
@@ -247,6 +259,7 @@ erDiagram
     "worker_documents" }o--|| "workers" : "worker"
     "devices" }o--|| "workers" : "worker"
     "refresh_tokens" }o--|| "workers" : "worker"
+    "ops_refresh_tokens" }o--|| "ops_users" : "opsUser"
     "requirements" }o--|| "companies" : "company"
     "bookings" }o--|| "requirements" : "requirement"
     "bookings" }o--|| "workers" : "worker"
